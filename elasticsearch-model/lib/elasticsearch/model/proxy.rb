@@ -91,14 +91,16 @@ module Elasticsearch
         end
 
         # Delegate methods to `@target`
+        def ruby2_keywords(*) # :nodoc:
+        end if RUBY_VERSION < "2.7"
         #
-        def method_missing(method_name, *arguments, &block)
+        ruby2_keywords def method_missing(method_name, *arguments, &block)
           target.respond_to?(method_name) ? target.__send__(method_name, *arguments, &block) : super
         end
 
         # Respond to methods from `@target`
         #
-        def respond_to?(method_name, include_private = false)
+        def respond_to_missing?(method_name, include_private = false)
           target.respond_to?(method_name) || super
         end
 
